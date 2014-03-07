@@ -1,0 +1,13 @@
+<section v-if="route.name === 'foo'">
+  <h1>foo component</h1>
+  <div v-component="menu"></div>
+  <div class="search">
+    <p>Type something here: <input v-model="keywords" placeholder="e.g. 'xyz'"></p>
+    <div class="results" v-class="loading: loading">
+      <p class="loader" v-show="loading" v-transition>loading…</p>
+      <ol>
+        <li v-repeat="results">{{$value}}</li>
+      </ol>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Vue Lanes example</title>
+  <link rel="stylesheet" href="bundle.css">
+</head>
+<body>
+<div id="app">
+  <h1>Vue Lanes example</h1>
+  <p>Current route: {{route.name}}</p>
+  <p>Current params: {{route.params}}</p>
+  <div v-component="menu"></div>
+  <div v-component="foo"></div>
+  <div v-component="bar"></div>
+  <div v-component="baz"></div>
+</div>
+<script src="bundle.js"></script>
+</body>
+</html>

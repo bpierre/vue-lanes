@@ -1,0 +1,75 @@
+#app {
+  width: 600px;
+  margin: 0 auto;
+  padding: 40px;
+  border: 1px solid #000;
+}
+#app h1 {
+  margin: 0;
+}
+section {
+  margin: 20px;
+  padding: 40px;
+  border: 1px solid #000;
+}
+nav a {
+  display: inline-block;
+  margin: 2px;
+  padding: 5px;
+  border: 1px solid #000;
+  text-decoration: none;
+}
+nav a.active {
+  text-decoration: underline;
+}
+a {
+  text-decoration: underline;
+  cursor: pointer;
+}
+a.active {
+  font-weight: bold;
+}
+.search {
+  margin-top: 20px;
+}
+.results {
+  position: relative;
+}
+.results ol {
+  overflow: hidden;
+  min-height: 500px;
+  margin: 0;
+  padding: 0;
+  list-style-position: inside;
+}
+.results li {
+  margin: 20px 0;
+  padding: 20px;
+  border: 1px solid #ccc;
+}
+.results li:first-child {
+  margin-top: 0;
+}
+.results li:last-child {
+  margin-bottom: 0;
+}
+.results .loader {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: calc(100% - 2px);
+  height: calc(100% - 2px);
+  margin: 0;
+  line-height: 200px;
+  text-align: center;
+  font-size: 24px;
+  background: rgba(0,0,0,0.1);
+  border: 1px solid #ccc;
+  opacity: 1;
+  transition: opacity 150ms ease-in-out;
+}
+.results .loader.v-enter,
+.results .loader.v-leave {
+  opacity: 0;
+}
+

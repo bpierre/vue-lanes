@@ -1,0 +1,59 @@
+#app
+  width 600px
+  margin 0 auto
+  padding 40px
+  border 1px solid black
+  h1
+    margin 0
+section
+  margin 20px
+  padding 40px
+  border 1px solid black
+nav
+  a
+    display inline-block
+    margin 2px
+    padding 5px
+    border 1px solid black
+    text-decoration none
+    &.active
+      text-decoration underline
+a
+  text-decoration underline
+  cursor pointer
+a.active
+  font-weight bold
+.search
+  margin-top 20px
+.results
+  position relative
+  ol
+    overflow hidden
+    min-height 500px
+    margin 0
+    padding 0
+    list-style-position inside
+  li
+    margin 20px 0
+    padding 20px
+    border 1px solid #ccc
+    &:first-child
+      margin-top 0
+    &:last-child
+      margin-bottom 0
+  .loader
+    position absolute
+    top 0
+    left 0
+    width calc(100% - 2px)
+    height calc(100% - 2px)
+    margin 0
+    line-height 200px
+    text-align center
+    font-size 24px
+    background rgba(0,0,0,.1)
+    border 1px solid #ccc
+    opacity 1
+    transition opacity 150ms ease-in-out
+    &.v-enter, &.v-leave
+      opacity 0

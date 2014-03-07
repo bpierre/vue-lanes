@@ -1,0 +1,23 @@
+{
+  "name": "vue-lanes",
+  "description": "Event-based routing system for Vue.js",
+  "version": "0.0.0",
+  "author": "Pierre Bertet <bonjour@pierrebertet.net> (http://pierrebertet.net/)",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/bpierre/vue-lanes.git"
+  },
+  "main": "index.js",
+  "scripts": {
+    "test": "tape test/*.js"
+  },
+  "devDependencies": {
+    "minihash": "0.0.2",
+    "miniroutes": "0.0.1",
+    "tape": "^2.10.2",
+    "browserify": "^3.32.0",
+    "brfs": "^1.0.0",
+    "stylus": "^0.42.3"
+  }
+}

@@ -1,0 +1,7 @@
+<nav>
+  <a
+    v-repeat="paths"
+    v-go="$value"
+    v-class="active: $value === path"
+    >{{$value}}</a>
+</nav>
