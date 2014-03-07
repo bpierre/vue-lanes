@@ -2,6 +2,9 @@
 
 Event-based routing system for [Vue.js](http://vuejs.org).
 
+<p align="center"><img width="958" height="315" alt="vue-lanes illustration" src="http://scri.ch/luh.png"></p>
+
+
 ## Example
 
 Vue Lanes need to be initialized first. The `Lanes` extended Vue will let you create _Vue Lanes_ components, or can be directly instantiated.
@@ -94,3 +97,7 @@ IE9+ and modern browsers.
 ## License
 
 [MIT](http://pierre.mit-license.org/)
+
+## Special thanks
+
+Illustration made by [Raphaël Bastide](http://raphaelbastide.com/) with [scri.ch](http://scri.ch/).
