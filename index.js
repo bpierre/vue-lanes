@@ -32,17 +32,6 @@ function initRoot(vm, routes, prefix) {
     vm.$broadcast('lanes:route', route, except);
   });
 
-  // Send a route update to a single VM
-  vm.$on('lanes:request-route', function(childVm) {
-    if (currentRoute) {
-      childVm.$emit('lanes:route', currentRoute);
-    } else {
-      vm.$once('lanes:route', function(route) {
-        childVm.$emit('lanes:route', route);
-      });
-    }
-  });
-
   // Routing mechanism
   hash = minihash(prefix, miniroutes(routes, function(route) {
     if (currentRoute && routesEqual(currentRoute, route)) return;
@@ -66,10 +55,6 @@ module.exports = function(Vue, options) {
       var self = this;
       if (this.$root === this) {
         initRoot(this, makeRoutes(options.routes), options.prefix || '');
-      } else {
-        this.$root.$once('hook:ready', function() {
-          self.$dispatch('lanes:request-route', self);
-        });
       }
     }
   });
