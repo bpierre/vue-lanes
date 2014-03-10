@@ -22,7 +22,8 @@
     "stylus": "^0.42.3",
     "tape": "^2.10.2",
     "testling": "^1.6.0",
-    "coverify": "^1.0.6"
+    "coverify": "^1.0.6",
+    "vue": "^0.9.3"
   },
   "testling": {
     "files": "test/*.js",
