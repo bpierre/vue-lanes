@@ -93,6 +93,8 @@ The `lanes:path` event must be dispatched from a Vue Lanes instance in order to 
 
 IE9+ and modern browsers.
 
+[![Browser support](https://ci.testling.com/bpierre/vue-lanes.png)](https://ci.testling.com/bpierre/vue-lanes)
+
 ## License
 
 [MIT](http://pierre.mit-license.org/)
