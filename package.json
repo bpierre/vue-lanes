@@ -10,14 +10,34 @@
   },
   "main": "index.js",
   "scripts": {
-    "test": "tape test/*.js"
+    "test": "browserify test/*.js | testling",
+    "test-browser": "browserify test/*.js | testling -u",
+    "cover": "browserify -t coverify test/*.js | testling | coverify"
   },
   "devDependencies": {
     "minihash": "0.0.2",
     "miniroutes": "0.0.1",
-    "tape": "^2.10.2",
     "browserify": "^3.32.0",
     "brfs": "^1.0.0",
-    "stylus": "^0.42.3"
+    "stylus": "^0.42.3",
+    "tape": "^2.10.2",
+    "testling": "^1.6.0",
+    "coverify": "^1.0.6"
+  },
+  "testling": {
+    "files": "test/*.js",
+    "browsers": [
+      "ie/9..latest",
+      "chrome/25..latest",
+      "chrome/canary",
+      "firefox/20..latest",
+      "firefox/nightly",
+      "safari/6..latest",
+      "opera/11.0..latest",
+      "opera/next",
+      "iphone/6..latest",
+      "ipad/6..latest",
+      "android-browser/4.2..latest"
+    ]
   }
 }
