@@ -14,9 +14,11 @@
     "test-browser": "browserify test/*.js | testling -u",
     "cover": "browserify -t coverify test/*.js | testling | coverify"
   },
-  "devDependencies": {
+  "dependencies": {
     "minihash": "0.0.2",
-    "miniroutes": "0.0.1",
+    "miniroutes": "0.0.1"
+  },
+  "devDependencies": {
     "browserify": "^3.32.0",
     "brfs": "^1.0.0",
     "stylus": "^0.42.3",
