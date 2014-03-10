@@ -1,7 +1,7 @@
 {
   "name": "vue-lanes",
   "description": "Event-based routing system for Vue.js",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "author": "Pierre Bertet <bonjour@pierrebertet.net> (http://pierrebertet.net/)",
   "license": "MIT",
   "repository": {
