@@ -1,6 +1,19 @@
 var minihash = require('minihash');
 var miniroutes = require('miniroutes');
 
+// if $compiler.init is false, the ready hook has been triggered
+function ensureReady(vm, cb) {
+  if (!vm.$compiler.init) return cb();
+  vm.$once('hook:ready', cb);
+}
+
+function createLog(debug) {
+  if (!debug) return function() {};
+  return function() {
+    console.log.apply(console, [].slice.call(arguments));
+  }
+}
+
 function routesEqual(route1, route2) {
   if (!(route1 && route2) ||
       route1.name !== route2.name ||
@@ -14,29 +27,41 @@ function routesEqual(route1, route2) {
   return true;
 }
 
-function initRoot(vm, routes, prefix) {
+function initRoot(vm, routes, options) {
   var currentRoute = null;
   var hash = null;
-
-  // Received a new path: update the hash value (triggers a route update)
-  vm.$on('lanes:path', function(path) {
-    if (hash) return hash.value = path;
-    vm.$root.$once('hook:ready', function() {
-      hash.value = path;
-    });
-  });
+  var log = createLog(options.debug);
 
   // Update the current path on update event
   vm.$on('lanes:route', function(route, except) {
+    log('lanes:route received', route)
     currentRoute = route;
     vm.$broadcast('lanes:route', route, except);
   });
 
+  // New path received: update the hash value (triggers a route update)
+  vm.$on('lanes:path', function(path) {
+    log('lanes:path received', path)
+    ensureReady(vm, function() {
+      log('change the hash value', path);
+      hash.value = path;
+    });
+  });
+
   // Routing mechanism
-  hash = minihash(prefix, miniroutes(routes, function(route) {
-    if (currentRoute && routesEqual(currentRoute, route)) return;
-    vm.$emit('lanes:route', route);
+  hash = minihash(options.prefix, miniroutes(routes, function(route) {
+    log('hash->route received', route)
+    ensureReady(vm, function() {
+      if (!currentRoute || !routesEqual(currentRoute, route)) {
+        log('emits a lanes:route event', route);
+        vm.$emit('lanes:route', route);
+      }
+    });
   }));
+
+  vm.$on('hook:beforeDestroy', function() {
+    hash.stop();
+  });
 }
 
 function makeRoutes(routes) {
@@ -51,10 +76,12 @@ function makeRoutes(routes) {
 
 module.exports = function(Vue, options) {
   return Vue.extend({
-    ready: function() {
-      var self = this;
+    created: function() {
       if (this.$root === this) {
-        initRoot(this, makeRoutes(options.routes), options.prefix || '');
+        initRoot(this, makeRoutes(options.routes), {
+          prefix: options.prefix || '',
+          debug: options.debug || false
+        });
       }
     }
   });
