@@ -1,4 +1,4 @@
-# Vue Lanes
+# Vue Lanes [![Build Status](https://travis-ci.org/bpierre/vue-lanes.png?branch=master)](https://travis-ci.org/bpierre/vue-lanes)
 
 Event-based routing system for [Vue.js](http://vuejs.org).
 
@@ -88,7 +88,6 @@ The `lanes:path` event must be dispatched from a Vue Lanes instance in order to 
 ## TODO
 
 - Add an `history.pushState` mode.
-- Tests (tape + testling)
 
 ## Browser compatibility
 
