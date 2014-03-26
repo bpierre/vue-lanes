@@ -18,7 +18,7 @@ function routesEqual(route1, route2) {
   if (!(route1 && route2) ||
       route1.name !== route2.name ||
       route1.params.length !== route2.params.length ||
-      route1.value !== route2.value) {
+      route1.path !== route2.path) {
     return false;
   }
   for (var i = route1.params.length - 1; i >= 0; i--) {
