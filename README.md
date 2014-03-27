@@ -86,13 +86,13 @@ If you are interested by a specific route, you can _listen_ for the `lanes:updat
 
 The `lanes:route` event will send a `route` paramater, which is the route object provided by [miniroutes](https://github.com/bpierre/miniroutes).
 
-### lanes:update:<route_name>
+### lanes:update:\<route_name\>
 
 Where `<route_name>` is the name of a registered route.
 
 The `lanes:update:<route_name>` acts exactly as the `lanes:route` event, except it is for a specific route. This is useful if you want to do something when a specific route is active.
 
-### lanes:leave:<route_name>
+### lanes:leave:\<route_name\>
 
 Where `<route_name>` is the name of a registered route.
 
