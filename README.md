@@ -80,23 +80,23 @@ $ npm install vue-lanes
 
 Inside a `Lanes` extended Vue, you can _listen_ for the `lanes:route` event, and _dispatch_ a `lanes:path` event to change the path.
 
-If you are interested by a specific route, you can _listen_ for the `lanes:update:<route_name>` and `lanes:leave:<route_name>` events.
+If you are interested by a specific route, you can _listen_ for the `lanes:update:<route_name>` and `lanes:leave:{route_name}` events.
 
 ### lanes:route
 
 The `lanes:route` event will send a `route` paramater, which is the route object provided by [miniroutes](https://github.com/bpierre/miniroutes).
 
-### lanes:update:\<route_name\>
+### lanes:update:{route_name}
 
-Where `<route_name>` is the name of a registered route.
+Where `{route_name}` is the name of a registered route.
 
-The `lanes:update:<route_name>` acts exactly as the `lanes:route` event, except it is for a specific route. This is useful if you want to do something when a specific route is active.
+The `lanes:update:{route_name}` acts exactly as the `lanes:route` event, except it is for a specific route. This is useful if you want to do something when a specific route is active.
 
-### lanes:leave:\<route_name\>
+### lanes:leave:{route_name}
 
-Where `<route_name>` is the name of a registered route.
+Where `{route_name}` is the name of a registered route.
 
-The `lanes:leave:<route_name>` is triggered everytime another route is set. This event is not triggered if a route is just updated (different path).
+The `lanes:leave:{route_name}` is triggered everytime another route is set. This event is not triggered if a route is just updated (different path).
 
 ### lanes:path
 
