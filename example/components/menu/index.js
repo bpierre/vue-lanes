@@ -15,7 +15,7 @@ module.exports = {
   },
   created: function() {
     this.$on('lanes:route', function(route) {
-      this.path = route.value;
+      this.path = route.path;
     });
   }
 }

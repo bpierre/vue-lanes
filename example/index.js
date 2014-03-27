@@ -2,6 +2,7 @@ var Vue = require('vue');
 var vueLanes = require('../');
 
 var Lanes = vueLanes(Vue, {
+  debug: true,
   prefix: '!/',
   routes: function(route) {
 
@@ -16,20 +17,23 @@ var Lanes = vueLanes(Vue, {
   }
 });
 
-// var lanes = vueLanes(Vue, {
-//   prefix: '!/',
-//   routes: [
-//
-//     // Match '', 'foo', 'foo/<anything>'
-//     [ 'foo', /^(?:foo(?:\/(.+))?)?$/ ],
-//
-//     // Match 'bar'
-//     [ 'bar', /^bar\/*$/ ],
-//
-//     // Match 'baz', 'baz/<anything>'
-//     [ 'baz', /^baz(?:\/(.+))?\/*$/ ]
-//   ]
-// });
+/*
+// Same example with the array syntax:
+var Lanes = vueLanes(Vue, {
+  prefix: '!/',
+  routes: [
+
+    // Match '', 'foo', 'foo/<anything>'
+    [ 'foo', /^(?:foo(?:\/(.+))?)?$/ ],
+
+    // Match 'bar'
+    [ 'bar', /^bar\/*$/ ],
+
+    // Match 'baz', 'baz/<anything>'
+    [ 'baz', /^baz(?:\/(.+))?\/*$/ ]
+  ]
+});
+*/
 
 var app = new Lanes({
   el: 'body',
@@ -38,20 +42,21 @@ var app = new Lanes({
   },
   created: function() {
     this.$on('lanes:route', function(route) {
-      this.route = route;
-      var noslash = route.value.replace(/\/+$/, '');
-      if (noslash !== route.value) {
-        this.$emit('lanes:path', noslash);
-      }
+      this.route = {
+        name: route.name,
+        path: route.path,
+        params: route.params
+      };
+      this.$emit('lanes:path', route.path);
     });
   },
   directives: {
     go: require('./directives/go')
   },
   components: {
-    foo: Lanes.extend(require('./components/foo')),
-    bar: Lanes.extend(require('./components/bar')),
-    baz: Lanes.extend(require('./components/baz')),
-    menu: Lanes.extend(require('./components/menu'))
+    foo: require('./components/foo'),
+    bar: require('./components/bar'),
+    baz: require('./components/baz'),
+    menu: require('./components/menu')
   }
 });

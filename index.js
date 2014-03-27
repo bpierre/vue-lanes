@@ -8,9 +8,8 @@ function ensureReady(vm, cb) {
 }
 
 function createLog(debug) {
-  if (!debug) return function() {};
   return function() {
-    console.log.apply(console, [].slice.call(arguments));
+    if (debug) console.log.apply(console, [].slice.call(arguments));
   }
 }
 
@@ -33,15 +32,15 @@ function initRoot(vm, routes, options) {
   var log = createLog(options.debug);
 
   // Update the current path on update event
-  vm.$on('lanes:route', function(route, except) {
-    log('lanes:route received', route)
+  vm.$on('lanes:route', function(route) {
+    log('lanes:route received', route);
     currentRoute = route;
-    vm.$broadcast('lanes:route', route, except);
+    vm.$broadcast('lanes:route', route);
   });
 
   // New path received: update the hash value (triggers a route update)
   vm.$on('lanes:path', function(path) {
-    log('lanes:path received', path)
+    log('lanes:path received', path);
     ensureReady(vm, function() {
       log('change the hash value', path);
       hash.value = path;
@@ -49,10 +48,21 @@ function initRoot(vm, routes, options) {
   });
 
   // Routing mechanism
-  hash = minihash(options.prefix, miniroutes(routes, function(route) {
-    log('hash->route received', route)
+  hash = minihash(options.prefix, miniroutes(routes, function(route, previous) {
+    log('hash->route received', route);
     ensureReady(vm, function() {
       if (!currentRoute || !routesEqual(currentRoute, route)) {
+        // leave
+        if (previous && previous.name !== route.name) {
+          log('emits a lanes:leave:<route_name> event', previous);
+          vm.$emit('lanes:leave:' + previous.name, previous);
+          vm.$broadcast('lanes:leave:' + previous.name, previous);
+        }
+        // update
+        log('emits a lanes:update:<route_name> event', route);
+        vm.$emit('lanes:update:' + route.name, route);
+        vm.$broadcast('lanes:update:' + route.name, route);
+        // route
         log('emits a lanes:route event', route);
         vm.$emit('lanes:route', route);
       }

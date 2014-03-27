@@ -10,7 +10,7 @@ var fs = require('fs');
 
 module.exports = {
   template: "<section v-if=\"route.name === 'baz' && route.params[0] === 'abc'\">\n  <h1>abc component</h1>\n  <div v-component=\"menu\"></div>\n</section>\n"
-}
+};
 
 },{"fs":10}],3:[function(require,module,exports){
 var fs = require('fs');
@@ -43,17 +43,23 @@ module.exports = {
   template: "<section v-if=\"route.name === 'foo'\">\n  <h1>foo component</h1>\n  <div v-component=\"menu\"></div>\n  <div class=\"search\">\n    <p>Type something here: <input v-model=\"keywords\" placeholder=\"e.g. 'xyz'\"></p>\n    <div class=\"results\" v-class=\"loading: loading\">\n      <p class=\"loader\" v-show=\"loading\" v-transition>loading…</p>\n      <ol>\n        <li v-repeat=\"results\">{{$value}}</li>\n      </ol>\n    </div>\n  </div>\n</section>\n",
   created: function() {
     var self = this;
+    var active = null;
 
     // The current route has been updated
-    this.$on('lanes:route', function(route) {
-      console.log('foo: route received', route.name);
-      if (route.name !== 'foo') return;
+    this.$on('lanes:update:foo', function(route) {
+      active = true;
       this.keywords = route.params[0] || '';
+    });
+
+    // Another route is set
+    this.$on('lanes:leave:foo', function() {
+      active = false;
     });
 
     var typeTimeout = null;
     this.$watch('keywords', function(keywords) {
       if (typeTimeout) clearTimeout(typeTimeout);
+      if (!active) return;
 
       // Update the current path (which will update the current route)
       var path = 'foo' + (keywords? '/' + keywords : '');
@@ -101,7 +107,7 @@ module.exports = {
   },
   created: function() {
     this.$on('lanes:route', function(route) {
-      this.path = route.value;
+      this.path = route.path;
     });
   }
 }
@@ -131,6 +137,7 @@ var Vue = require('vue');
 var vueLanes = require('../');
 
 var Lanes = vueLanes(Vue, {
+  debug: true,
   prefix: '!/',
   routes: function(route) {
 
@@ -145,20 +152,23 @@ var Lanes = vueLanes(Vue, {
   }
 });
 
-// var lanes = vueLanes(Vue, {
-//   prefix: '!/',
-//   routes: [
-//
-//     // Match '', 'foo', 'foo/<anything>'
-//     [ 'foo', /^(?:foo(?:\/(.+))?)?$/ ],
-//
-//     // Match 'bar'
-//     [ 'bar', /^bar\/*$/ ],
-//
-//     // Match 'baz', 'baz/<anything>'
-//     [ 'baz', /^baz(?:\/(.+))?\/*$/ ]
-//   ]
-// });
+/*
+// Same example with the array syntax:
+var Lanes = vueLanes(Vue, {
+  prefix: '!/',
+  routes: [
+
+    // Match '', 'foo', 'foo/<anything>'
+    [ 'foo', /^(?:foo(?:\/(.+))?)?$/ ],
+
+    // Match 'bar'
+    [ 'bar', /^bar\/*$/ ],
+
+    // Match 'baz', 'baz/<anything>'
+    [ 'baz', /^baz(?:\/(.+))?\/*$/ ]
+  ]
+});
+*/
 
 var app = new Lanes({
   el: 'body',
@@ -167,21 +177,22 @@ var app = new Lanes({
   },
   created: function() {
     this.$on('lanes:route', function(route) {
-      this.route = route;
-      var noslash = route.value.replace(/\/+$/, '');
-      if (noslash !== route.value) {
-        this.$emit('lanes:path', noslash);
-      }
+      this.route = {
+        name: route.name,
+        path: route.path,
+        params: route.params
+      };
+      this.$emit('lanes:path', route.path);
     });
   },
   directives: {
     go: require('./directives/go')
   },
   components: {
-    foo: Lanes.extend(require('./components/foo')),
-    bar: Lanes.extend(require('./components/bar')),
-    baz: Lanes.extend(require('./components/baz')),
-    menu: Lanes.extend(require('./components/menu'))
+    foo: require('./components/foo'),
+    bar: require('./components/bar'),
+    baz: require('./components/baz'),
+    menu: require('./components/menu')
   }
 });
 
@@ -196,9 +207,8 @@ function ensureReady(vm, cb) {
 }
 
 function createLog(debug) {
-  if (!debug) return function() {};
   return function() {
-    console.log.apply(console, [].slice.call(arguments));
+    if (debug) console.log.apply(console, [].slice.call(arguments));
   }
 }
 
@@ -206,7 +216,7 @@ function routesEqual(route1, route2) {
   if (!(route1 && route2) ||
       route1.name !== route2.name ||
       route1.params.length !== route2.params.length ||
-      route1.value !== route2.value) {
+      route1.path !== route2.path) {
     return false;
   }
   for (var i = route1.params.length - 1; i >= 0; i--) {
@@ -222,14 +232,14 @@ function initRoot(vm, routes, options) {
 
   // Update the current path on update event
   vm.$on('lanes:route', function(route, except) {
-    log('lanes:route received', route)
+    log('lanes:route received', route);
     currentRoute = route;
     vm.$broadcast('lanes:route', route, except);
   });
 
   // New path received: update the hash value (triggers a route update)
   vm.$on('lanes:path', function(path) {
-    log('lanes:path received', path)
+    log('lanes:path received', path);
     ensureReady(vm, function() {
       log('change the hash value', path);
       hash.value = path;
@@ -237,12 +247,16 @@ function initRoot(vm, routes, options) {
   });
 
   // Routing mechanism
-  hash = minihash(options.prefix, miniroutes(routes, function(route) {
-    log('hash->route received', route)
+  hash = minihash(options.prefix, miniroutes(routes, function(route, previous) {
+    log('hash->route received', route);
     ensureReady(vm, function() {
       if (!currentRoute || !routesEqual(currentRoute, route)) {
         log('emits a lanes:route event', route);
         vm.$emit('lanes:route', route);
+        vm.$broadcast('lanes:update:' + route.name, route);
+        if (previous && previous.name !== route.name) {
+          vm.$broadcast('lanes:leave:' + previous.name, previous);
+        }
       }
     });
   }));
@@ -381,8 +395,12 @@ function hashChange(prefix, cb) {
  */
 
 module.exports = function createRouting(paths, cb) {
+  var route = null;
+  var previous = null;
   return function updatePath(path) {
-    cb(getRoute(paths, path));
+    previous = route;
+    route = getRoute(paths, path);
+    cb(route, previous);
   };
 }
 
@@ -397,15 +415,15 @@ function matches(re, path) {
   return matches;
 }
 
-function getRoute(paths, value) {
+function getRoute(paths, path) {
   var route = {
     name: null,
     params: [],
-    value: value
+    path: path
   };
   for (var i=0, l = paths.length, params; i < l; i++) {
     // Valid path found
-    params = matches(paths[i][1], value);
+    params = matches(paths[i][1], path);
     if (params !== null) {
       route.name = paths[i][0];
       route.params = params;
