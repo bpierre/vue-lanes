@@ -2,7 +2,7 @@
 
 Event-based routing system for [Vue.js](http://vuejs.org).
 
-<p align="center"><img width="958" height="315" alt="vue-lanes illustration" src="http://scri.ch/luh.png"></p>
+<p align="center"><img width="958" height="315" alt="vue-lanes illustration" src="http://scri.ch/luh-2x.png"></p>
 
 
 ## Example
